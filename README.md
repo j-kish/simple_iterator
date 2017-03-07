@@ -19,11 +19,11 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-itr = SimpleIterator.new(
+itr = SimpleIterator::Plain.new(
+  offset:           0,
   increment_offset: 100,
-  offset: 0,
-  next_cb: lambda { |offset|
-    users = User.offset(offset).limit(100)
+  next_cb:          lambda { |current_offset|
+    users = User.offset(current_offset).limit(100)
     users.length > 0 ? users : nil
   }
 )
@@ -31,6 +31,27 @@ itr = SimpleIterator.new(
 while (users = itr.next)
   users.each do |user|
     p user
+  end
+end
+```
+
+```ruby
+itr = SimpleIterator::File.new(
+  file_path:        tsv_file,
+  separate:         "\t",
+  increment_lines:  1000,
+  line_separate_cb: lambda { |row|
+    {
+      id:   row[0],
+      name: row[1]
+    }
+  }
+)
+
+while (rows = itr.next)
+  rows.each do |row|
+    p row[:id]
+    p row[:name]
   end
 end
 ```
