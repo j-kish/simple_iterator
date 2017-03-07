@@ -23,7 +23,8 @@ itr = SimpleIterator.new(
   increment_offset: 100,
   offset: 0,
   next_cb: lambda { |offset|
-    User.offset(offset).limit(100)
+    users = User.offset(offset).limit(100)
+    users.length > 0 ? users : nil
   }
 )
 
